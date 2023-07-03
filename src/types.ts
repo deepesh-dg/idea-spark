@@ -1,0 +1,15 @@
+import { Models } from "appwrite";
+
+export type Project = {
+    name: string;
+    userId: string;
+    description?: string;
+    thumbnail: string;
+    category: string;
+    likes: string[];
+};
+
+export type Projects = Project[];
+
+export type ProjectDocument = Models.Document & Project;
+export type ProjectDocuments = Models.DocumentList<ProjectDocument>;
