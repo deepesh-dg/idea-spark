@@ -76,7 +76,12 @@ function ProjectForm() {
             )}
             <form className="w-full" onSubmit={addProject}>
                 <div className="w-full max-w-2xl">
-                    <ImgDragDrop className="mb-4" placeholder="Upload Thumbnail" onChange={uploadThumbnail} />
+                    <ImgDragDrop
+                        className="mb-4"
+                        placeholder="Upload Thumbnail"
+                        onChange={uploadThumbnail}
+                        onError={setErr}
+                    />
                 </div>
                 <Input
                     setValue={(value) => setForm((prev) => ({ ...prev, name: value }))}

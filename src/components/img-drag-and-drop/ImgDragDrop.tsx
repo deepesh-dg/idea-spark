@@ -5,13 +5,20 @@ type Props = {
     className?: string;
     placeholder?: string;
     onChange?: (file: File) => void;
+    onError?: (err: string) => void;
 };
 
-function ImgDragDrop({ onChange: onSelect, placeholder = "Drag and Drop Files", className = "" }: Props) {
+function ImgDragDrop({ onChange, onError, placeholder = "Drag and Drop Files", className = "" }: Props) {
     const [file, setFile] = useState<{ src: string; file: File } | null>(null);
     const fileInput = useRef<HTMLInputElement>(null);
 
-    const isImg = (fileType: string) => fileType.includes("image") || false;
+    const isImg = (fileType: string) => {
+        const is = fileType.includes("image") || false;
+
+        if (!is && onError) onError("Please select image");
+
+        return is;
+    };
 
     const fileSelect = (file: File) => {
         const reader = new FileReader();
@@ -35,8 +42,8 @@ function ImgDragDrop({ onChange: onSelect, placeholder = "Drag and Drop Files", 
     };
 
     useEffect(() => {
-        if (onSelect && file) onSelect(file.file);
-    }, [file, onSelect]);
+        if (onChange && file) onChange(file.file);
+    }, [file, onChange]);
 
     return (
         <div
