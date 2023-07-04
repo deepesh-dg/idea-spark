@@ -1,6 +1,8 @@
 import conf from "@/conf/conf";
 import { Project, ProjectDocument } from "@/types";
 import { Client, Account, ID, Databases, Storage } from "appwrite";
+import axios from "axios";
+import { deleteCookie, setCookie } from "cookies-next";
 
 type CreateUserAccount = {
     email: string;
@@ -12,19 +14,26 @@ type LoginUserAccount = {
     password: string;
 };
 
-const appwriteClient = new Client();
+export class Service {
+    client = new Client();
+    axios = axios.create({
+        baseURL: "/api",
+    });
+    account;
+    databases;
+    bucket;
 
-appwriteClient.setEndpoint(conf.appwriteUrl).setProject(conf.appwriteProjectId);
+    constructor() {
+        this.client.setEndpoint(conf.appwriteUrl).setProject(conf.appwriteProjectId);
+        this.account = new Account(this.client);
+        this.databases = new Databases(this.client);
+        this.bucket = new Storage(this.client);
+    }
 
-export const account = new Account(appwriteClient);
-export const databases = new Databases(appwriteClient);
-export const bucket = new Storage(appwriteClient);
-
-export class AppwriteService {
     // create a new record of user inside appwrite
     async createAccount({ email, password, name }: CreateUserAccount) {
         try {
-            const userAccount = await account.create(ID.unique(), email, password, name);
+            const userAccount = await this.account.create(ID.unique(), email, password, name);
             if (userAccount) {
                 // create login feature
                 return this.login({ email, password });
@@ -38,7 +47,12 @@ export class AppwriteService {
 
     async login({ email, password }: LoginUserAccount) {
         try {
-            return await account.createEmailSession(email, password);
+            const session = await this.account.createEmailSession(email, password);
+
+            const { jwt } = await this.account.createJWT();
+            setCookie("token", jwt);
+
+            return session;
         } catch (error) {
             throw error;
         }
@@ -55,7 +69,7 @@ export class AppwriteService {
 
     async getCurrentUser() {
         try {
-            return await account.get();
+            return await this.account.get();
         } catch (error) {
             console.log("Appwrite service :: getCurrentUser() :: " + error);
         }
@@ -65,7 +79,8 @@ export class AppwriteService {
 
     async logout() {
         try {
-            await account.deleteSessions();
+            await this.account.deleteSessions();
+            deleteCookie("token");
         } catch (error) {
             console.log("Appwrite service :: logout() :: " + error);
         }
@@ -73,7 +88,7 @@ export class AppwriteService {
 
     async getProjectList() {
         try {
-            return await databases.listDocuments<ProjectDocument>(
+            return await this.databases.listDocuments<ProjectDocument>(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectoinId
             );
@@ -85,7 +100,7 @@ export class AppwriteService {
 
     async getProject(id: string) {
         try {
-            return await databases.getDocument<ProjectDocument>(
+            return await this.databases.getDocument<ProjectDocument>(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectoinId,
                 id
@@ -98,7 +113,7 @@ export class AppwriteService {
 
     async createProject(project: Project) {
         try {
-            return await databases.createDocument<ProjectDocument>(
+            return await this.databases.createDocument<ProjectDocument>(
                 conf.appwriteDatabaseId,
                 conf.appwriteCollectoinId,
                 ID.unique(),
@@ -112,7 +127,7 @@ export class AppwriteService {
 
     async deleteProject(id: string) {
         try {
-            await databases.deleteDocument(conf.appwriteDatabaseId, conf.appwriteCollectoinId, id);
+            await this.databases.deleteDocument(conf.appwriteDatabaseId, conf.appwriteCollectoinId, id);
             return true;
         } catch (error) {
             console.log("Appwrite service :: deleteProject() :: " + error);
@@ -122,7 +137,7 @@ export class AppwriteService {
 
     async uploadFile(file: File) {
         try {
-            return await bucket.createFile(conf.appwriteBucketId, ID.unique(), file);
+            return await this.bucket.createFile(conf.appwriteBucketId, ID.unique(), file);
         } catch (error) {
             console.log("Appwrite service :: uploadFile() :: " + error);
             return false;
@@ -131,7 +146,7 @@ export class AppwriteService {
 
     async deleteFile(fileId: string) {
         try {
-            await bucket.deleteFile(conf.appwriteBucketId, fileId);
+            await this.bucket.deleteFile(conf.appwriteBucketId, fileId);
             return true;
         } catch (error) {
             console.log("Appwrite service :: deleteFile() :: " + error);
@@ -140,10 +155,10 @@ export class AppwriteService {
     }
 
     getFilePreview(fileId: string) {
-        return bucket.getFilePreview(conf.appwriteBucketId, fileId).href;
+        return this.bucket.getFilePreview(conf.appwriteBucketId, fileId).href;
     }
 }
 
-const appwriteService = new AppwriteService();
+const service = new Service();
 
-export default appwriteService;
+export default service;

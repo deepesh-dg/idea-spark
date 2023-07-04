@@ -7,6 +7,8 @@ export type Project = {
     thumbnail: string;
     category: string;
     likes: string[];
+    websiteUrl?: string;
+    github: string;
 };
 
 export type Projects = Project[];

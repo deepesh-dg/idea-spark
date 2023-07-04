@@ -5,6 +5,7 @@ const conf = {
     appwriteCollectoinId: String(process.env.NEXT_PUBLIC_APPWRITE_COLLECTION_ID),
     appwriteBucketId: String(process.env.NEXT_PUBLIC_APPWRITE_BUCKET_ID),
     appwriteKey: String(process.env.APPWRITE_API_KEY),
+    projectCategories: ["uncatgorized", "form"],
 };
 
 export default conf;
