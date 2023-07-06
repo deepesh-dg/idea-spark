@@ -11,6 +11,13 @@ export type Project = {
     github: string;
 };
 
+export type User = {
+    id: string;
+    name: string;
+    username: string;
+    email: string;
+};
+
 export type Projects = Project[];
 
 export type ProjectDocument = Models.Document & Project;

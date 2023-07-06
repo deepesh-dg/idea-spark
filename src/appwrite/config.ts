@@ -1,5 +1,5 @@
 import conf from "@/conf/conf";
-import { Project, ProjectDocument } from "@/types";
+import { Project, ProjectDocument, User } from "@/types";
 import { Client, Account, ID, Databases, Storage } from "appwrite";
 import axios from "axios";
 
@@ -112,6 +112,22 @@ export class Service {
             console.log("Appwrite service :: getProject() :: " + error);
             return null;
         }
+    }
+
+    async getUser(id: string) {
+        try {
+            const response = await this.axios.get<User | null>("/user", {
+                params: {
+                    id,
+                },
+            });
+
+            return response.data;
+        } catch (error) {
+            console.log("Appwrite service :: getUser() :: " + error);
+        }
+
+        return null;
     }
 
     async createProject(project: Project) {
