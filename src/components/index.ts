@@ -5,6 +5,22 @@ import ProjectCard from "./project-card/ProjectCard";
 import ProjectForm from "./project-form/ProjectForm";
 import ProjectFormSlide from "./project-form-slide/ProjectFormSlide";
 import ImgDragDrop from "./img-drag-and-drop/ImgDragDrop";
+import Login from "./Login";
+import Signup from "./Signup";
+import Avatar from "./Avatar";
+import Loader from "./Loader";
 
 export * from "./common";
-export { Header, Container, Logo, ProjectCard, ProjectForm, ProjectFormSlide, ImgDragDrop };
+export {
+    Header,
+    Container,
+    Logo,
+    ProjectCard,
+    ProjectForm,
+    ProjectFormSlide,
+    ImgDragDrop,
+    Login,
+    Signup,
+    Avatar,
+    Loader,
+};

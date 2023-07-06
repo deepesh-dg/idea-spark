@@ -1,9 +1,6 @@
 import { Header } from "@/components";
 import "./globals.css";
 import { Inter } from "next/font/google";
-import { cookies } from "next/headers";
-import { store } from "@/state/store";
-import { login } from "@/state/authSlice";
 import StateProvider from "@/state/StateProvider";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -14,12 +11,6 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-    const cookiesStore = cookies();
-    if (cookiesStore.has("token")) {
-        const token = cookiesStore.get("token")?.value as string;
-        store.dispatch(login(token));
-    }
-
     return (
         <html lang="en">
             <body className={inter.className}>

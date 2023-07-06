@@ -89,7 +89,7 @@ function ProjectFormSlide() {
 
     return (
         <div
-            className="fixed inset-y-0 right-0 duration-150 flex items-center w-full max-w-2xl"
+            className="fixed inset-y-0 right-0 duration-150 flex items-center w-full max-w-2xl z-50"
             style={{
                 transform: `translateX(${
                     initialRender ? "100%" : `${open ? 0 : formRef.current?.clientWidth || 0}px`
@@ -105,7 +105,7 @@ function ProjectFormSlide() {
             >
                 {open ? "-" : "+"}
             </button>
-            <div className="relative w-full h-full z-[1]" ref={formRef} onClick={(e) => e.stopPropagation()}>
+            <div className="relative w-full h-full" ref={formRef} onClick={(e) => e.stopPropagation()}>
                 <ProjectForm />
             </div>
         </div>

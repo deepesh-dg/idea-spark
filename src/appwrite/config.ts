@@ -2,7 +2,6 @@ import conf from "@/conf/conf";
 import { Project, ProjectDocument } from "@/types";
 import { Client, Account, ID, Databases, Storage } from "appwrite";
 import axios from "axios";
-import { deleteCookie, setCookie } from "cookies-next";
 
 type CreateUserAccount = {
     email: string;
@@ -47,12 +46,7 @@ export class Service {
 
     async login({ email, password }: LoginUserAccount) {
         try {
-            const session = await this.account.createEmailSession(email, password);
-
-            const { jwt } = await this.account.createJWT();
-            setCookie("token", jwt);
-
-            return session;
+            return await this.account.createEmailSession(email, password);
         } catch (error) {
             throw error;
         }
@@ -77,10 +71,19 @@ export class Service {
         return null;
     }
 
+    async getToken() {
+        try {
+            const { jwt } = await this.account.createJWT();
+            return jwt;
+        } catch (error) {
+            console.log("Appwrite service :: getToken() :: " + error);
+            return null;
+        }
+    }
+
     async logout() {
         try {
             await this.account.deleteSessions();
-            deleteCookie("token");
         } catch (error) {
             console.log("Appwrite service :: logout() :: " + error);
         }

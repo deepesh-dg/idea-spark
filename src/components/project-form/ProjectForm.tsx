@@ -1,42 +1,53 @@
 "use client";
-import React, { useCallback, useState } from "react";
-import { Button, ImgDragDrop, Input, Select, Textarea } from "..";
+import React, { useCallback, useMemo, useState } from "react";
+import { Button, ImgDragDrop, Input, Loader, Select, Textarea } from "..";
 import conf from "@/conf/conf";
 import service from "@/appwrite/config";
+import { useAppDispatch, useAppSelector } from "@/state/store";
+import { addProjects } from "@/state/projectsSlice";
 
 function ProjectForm() {
-    const [form, setForm] = useState({
-        name: "",
-        description: "",
-        thumbnail: "",
-        category: "uncategorized",
-        websiteUrl: "",
-        github: "",
-    });
+    const formInitialValue = useMemo(
+        () => ({
+            name: "",
+            description: "",
+            thumbnail: "",
+            category: "uncategorized",
+            websiteUrl: "",
+            github: "",
+        }),
+        []
+    );
+
+    const [form, setForm] = useState(formInitialValue);
 
     const [loader, setLoader] = useState(false);
     const [err, setErr] = useState<string | null>(null);
 
-    const uploadThumbnail = useCallback(async (image: File) => {
-        setLoader(true);
-        setErr(null);
+    const { status: authStatus, userData } = useAppSelector((state) => state.auth);
+    const dispatch = useAppDispatch();
 
-        const user = await service.getCurrentUser();
+    const uploadThumbnail = useCallback(
+        async (image: File) => {
+            setLoader(true);
+            setErr(null);
 
-        if (user) {
-            const bucketImage = await service.uploadFile(image);
+            if (authStatus) {
+                const bucketImage = await service.uploadFile(image);
 
-            if (bucketImage) {
-                setForm((prev) => ({ ...prev, thumbnail: bucketImage.bucketId }));
+                if (bucketImage) {
+                    setForm((prev) => ({ ...prev, thumbnail: bucketImage.$id }));
+                } else {
+                    setErr("Error uploading thumbnail");
+                }
             } else {
-                setErr("Error uploading thumbnail");
+                setErr("User not logged in");
             }
-        } else {
-            setErr("User not logged in");
-        }
 
-        setLoader(false);
-    }, []);
+            setLoader(false);
+        },
+        [authStatus]
+    );
 
     const addProject = useCallback(
         async (e: React.FormEvent<HTMLFormElement>) => {
@@ -44,12 +55,12 @@ function ProjectForm() {
             setLoader(true);
             setErr(null);
 
-            const user = await service.getCurrentUser();
-
-            if (user) {
-                const project = await service.createProject({ ...form, userId: user.$id, likes: [] });
+            if (authStatus && userData) {
+                const project = await service.createProject({ ...form, userId: userData.$id, likes: [] });
 
                 if (project) {
+                    setForm(formInitialValue);
+                    dispatch(addProjects([project]));
                 } else {
                     setErr("Error adding project");
                 }
@@ -59,15 +70,12 @@ function ProjectForm() {
 
             setLoader(false);
         },
-        [form]
+        [form, formInitialValue, authStatus, userData, dispatch]
     );
 
     return (
-        <div
-            className={`relative h-full bg-dark p-4 border border-white/20 overflow-auto after:absolute after:inset-0 after:bg-white/20 ${
-                loader ? "" : "after:hidden"
-            }`}
-        >
+        <div className={`relative h-full bg-dark p-4 border border-white/20 overflow-auto`}>
+            <Loader show={loader} />
             <h2 className="text-2xl font-bold mb-4">Add New Project</h2>
             {err && (
                 <p className="text-red-600 border mt-2 mb-4 py-2 rounded-lg border-white/20 text-center">
@@ -78,7 +86,8 @@ function ProjectForm() {
                 <div className="w-full max-w-2xl">
                     <ImgDragDrop
                         className="mb-4"
-                        placeholder="Upload Thumbnail"
+                        placeholder="Upload a thumbnail"
+                        value={form.thumbnail ? service.getFilePreview(form.thumbnail) : ""}
                         onChange={uploadThumbnail}
                         onError={setErr}
                     />
@@ -89,6 +98,7 @@ function ProjectForm() {
                     placeholder="Project Name"
                     type="text"
                     className="mb-4"
+                    value={form.name}
                     required
                 />
                 <Textarea
@@ -97,14 +107,15 @@ function ProjectForm() {
                     className="mb-4"
                     label="Description : "
                     textareaClassName="h-40"
+                    value={form.description}
                     required
                 />
                 <Select
                     options={conf.projectCategories.map((category) => ({ name: category, value: category }))}
                     label="Select Catgory : "
                     setValue={(value) => setForm((prev) => ({ ...prev, category: value }))}
-                    selectdOption={form.category}
                     className="mb-4"
+                    value={form.category}
                 />
                 <Input
                     setValue={(value) => setForm((prev) => ({ ...prev, websiteUrl: value }))}
@@ -112,6 +123,7 @@ function ProjectForm() {
                     placeholder="Website URL"
                     type="url"
                     className="mb-4"
+                    value={form.websiteUrl}
                 />
                 <Input
                     setValue={(value) => setForm((prev) => ({ ...prev, github: value }))}
@@ -119,6 +131,7 @@ function ProjectForm() {
                     placeholder="Github URL"
                     type="url"
                     className="mb-4"
+                    value={form.github}
                     required
                 />
                 <Button type="submit" value="Add Project" className="w-full" />

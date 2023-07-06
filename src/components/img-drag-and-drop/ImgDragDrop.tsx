@@ -1,15 +1,16 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 
 type Props = {
+    value?: string;
     className?: string;
     placeholder?: string;
     onChange?: (file: File) => void;
     onError?: (err: string) => void;
 };
 
-function ImgDragDrop({ onChange, onError, placeholder = "Drag and Drop Files", className = "" }: Props) {
-    const [file, setFile] = useState<{ src: string; file: File } | null>(null);
+function ImgDragDrop({ value, onChange, onError, placeholder = "Drag and Drop Files", className = "" }: Props) {
+    const [file, setFile] = useState<File | null>(null);
     const fileInput = useRef<HTMLInputElement>(null);
 
     const isImg = (fileType: string) => {
@@ -21,12 +22,17 @@ function ImgDragDrop({ onChange, onError, placeholder = "Drag and Drop Files", c
     };
 
     const fileSelect = (file: File) => {
-        const reader = new FileReader();
-        reader.addEventListener("load", () => {
-            setFile((prev) => (prev ? { ...prev, src: reader.result as string } : null));
-        });
-        reader.readAsDataURL(file);
-        setFile({ src: "", file: file });
+        if (onChange) onChange(file);
+        setFile(file);
+        // const reader = new FileReader();
+        // reader.addEventListener("load", () => {
+        //     setFile((prev) => (prev ? { ...prev, src: reader.result as string } : null));
+        // });
+        // reader.readAsDataURL(file);
+        // setFile(() => {
+        //     if (onChange) onChange(file);
+        //     return { src: "", file: file };
+        // });
     };
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
@@ -41,13 +47,9 @@ function ImgDragDrop({ onChange, onError, placeholder = "Drag and Drop Files", c
         event.preventDefault();
     };
 
-    useEffect(() => {
-        if (onChange && file) onChange(file.file);
-    }, [file, onChange]);
-
     return (
         <div
-            className={`min-h-[100px] w-full flex flex-wrap items-center justify-center bg-white/10 rounded-lg cursor-pointer ${className}`}
+            className={`min-h-[100px] w-full flex flex-wrap items-center justify-center bg-white/10 rounded-lg cursor-pointer border border-white/20 ${className}`}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
             onClick={() => fileInput.current?.click()}
@@ -63,9 +65,9 @@ function ImgDragDrop({ onChange, onError, placeholder = "Drag and Drop Files", c
                     }
                 }}
             />
-            {file ? (
-                <div className="w-full border border-white/20">
-                    <img src={file.src} alt={file.file.name} />
+            {value ? (
+                <div className="w-full border border-white/20 flex items-center justify-center">
+                    <img src={value} alt={file?.name} />
                 </div>
             ) : (
                 placeholder

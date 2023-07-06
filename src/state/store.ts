@@ -1,10 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authSlice from "./authSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
+import projectsSlice from "./projectsSlice";
 
 export const store = configureStore({
     reducer: {
         auth: authSlice,
+        projects: projectsSlice,
     },
 });
 

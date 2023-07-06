@@ -7,10 +7,10 @@ type Props = {
     className?: string;
     selectClassName?: string;
     options: { name: string; value: string }[];
-    selectdOption?: string;
+    [key: string]: any;
 };
 
-function Select({ setValue, label, options, selectdOption, className = "", selectClassName = "" }: Props) {
+function Select({ setValue, label, options, className = "", selectClassName = "" }: Props) {
     const id = useId();
 
     return (
@@ -24,7 +24,6 @@ function Select({ setValue, label, options, selectdOption, className = "", selec
                 id={id}
                 className={`bg-white/10 px-4 py-2 rounded-lg outline-none w-full capitalize ${selectClassName}`}
                 onChange={(e) => setValue(e.target.value)}
-                value={selectdOption}
             >
                 {options.map((option) => (
                     <option key={option.value} value={option.value}>
