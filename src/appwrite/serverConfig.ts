@@ -1,6 +1,7 @@
 import conf from "@/conf/conf";
 import { Account, Client, Databases, Users } from "node-appwrite";
 import axios from "axios";
+import { Project, ProjectDocument } from "@/types";
 
 export class Service {
     client = new Client();
@@ -26,6 +27,33 @@ export class Service {
         }
 
         return null;
+    }
+
+    async getProject(id: string) {
+        try {
+            return await this.databases.getDocument<ProjectDocument>(
+                conf.appwriteDatabaseId,
+                conf.appwriteCollectoinId,
+                id
+            );
+        } catch (error) {
+            console.log("Appwrite service :: getProject() :: " + error);
+            return null;
+        }
+    }
+
+    async updateProject(id: string, project: Project) {
+        try {
+            return await this.databases.updateDocument<ProjectDocument>(
+                conf.appwriteDatabaseId,
+                conf.appwriteCollectoinId,
+                id,
+                project
+            );
+        } catch (error) {
+            console.log("Appwrite service :: updateProject() :: " + error);
+            return null;
+        }
     }
 }
 
