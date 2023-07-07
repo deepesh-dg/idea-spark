@@ -89,11 +89,12 @@ export class Service {
         }
     }
 
-    async getProjectList() {
+    async getProjectList(queries?: string[]) {
         try {
             return await this.databases.listDocuments<ProjectDocument>(
                 conf.appwriteDatabaseId,
-                conf.appwriteCollectoinId
+                conf.appwriteCollectoinId,
+                queries
             );
         } catch (error) {
             console.log("Appwrite service :: getProjectList() :: " + error);
@@ -151,6 +152,28 @@ export class Service {
         } catch (error) {
             console.log("Appwrite service :: deleteProject() :: " + error);
             return false;
+        }
+    }
+
+    async toggleLike(projectId: string, userId: string) {
+        try {
+            const res = await this.axios.patch<ProjectDocument | null>(`/project/${projectId}/like`, { userId });
+
+            return res.data;
+        } catch (error) {
+            console.log("Appwrite service :: toggleLike() :: " + error);
+            return null;
+        }
+    }
+
+    async views(projectId: string, userId: string) {
+        try {
+            const res = await this.axios.patch<ProjectDocument | null>(`/project/${projectId}/view`, { userId });
+
+            return res.data;
+        } catch (error) {
+            console.log("Appwrite service :: views() :: " + error);
+            return null;
         }
     }
 

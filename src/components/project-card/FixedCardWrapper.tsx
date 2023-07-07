@@ -31,7 +31,7 @@ function FixedCardWrapper({ project, children, top, bottom, left, right, width, 
                 <div className="border border-white/20 w-full h-screen">
                     <div className="overflow-auto w-full h-full bg-lightenDark py-12">
                         <Container>
-                            <div className="max-w-2xl mx-auto">
+                            <div className="max-w-4xl mx-auto">
                                 <div className="flex mb-4">
                                     <Link href={"/"}>
                                         <span className="inline-flex w-8 h-8 rounded-full border border-white/20 text-white/70 hover:text-white/90 hover:bg-white/10 justify-center items-center">

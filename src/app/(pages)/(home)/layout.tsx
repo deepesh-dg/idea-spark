@@ -1,6 +1,6 @@
 "use client";
 import service from "@/appwrite/config";
-import { Container, ProjectCard, ProjectCardHome } from "@/components";
+import { Container, ProjectCardHome } from "@/components";
 import { addProjects } from "@/state/projectsSlice";
 import { useAppDispatch, useAppSelector } from "@/state/store";
 import React, { useEffect } from "react";
@@ -11,7 +11,15 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         service.getProjectList().then((projects) => {
-            if (projects) dispatch(addProjects(projects.documents));
+            if (projects) {
+                const sortedProjects = projects.documents.sort((a, b) => {
+                    const prevDate = new Date(a.$createdAt);
+                    const nextDate = new Date(b.$createdAt);
+
+                    return prevDate > nextDate ? -1 : 1;
+                });
+                dispatch(addProjects(sortedProjects));
+            }
         });
     }, [dispatch]);
 

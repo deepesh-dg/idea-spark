@@ -10,7 +10,8 @@ import Login from "./Login";
 import Signup from "./Signup";
 import Avatar from "./Avatar";
 import Loader from "./Loader";
-import LikeProjectButton from "./like-project-button/LikeProjectButton";
+import LikeProjectButtonWrapper from "./like-project-button/LikeProjectButtonWrapper";
+import LargeLikeButton from "./like-project-button/LargeLikeButton";
 
 export * from "./common";
 export {
@@ -26,5 +27,6 @@ export {
     Signup,
     Avatar,
     Loader,
-    LikeProjectButton,
+    LikeProjectButtonWrapper,
+    LargeLikeButton,
 };

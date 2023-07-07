@@ -33,6 +33,7 @@ function ProjectCard({ project, link = true }: Props) {
             <span
                 className="inline-block absolute w-20 h-20 bg-white/10 blur-xl overflow-hidden opacity-0 z-[0] group-hover:opacity-100 -translate-x-1/2 -translate-y-1/2"
                 ref={blurEl}
+                // style={{ background: "#c1ffb4" }}
             ></span>
             <div className="w-full pt-[60%] relative overflow-hidden z-[1] mb-3">
                 <div className="absolute inset-0 flex justify-center items-center rounded-xl overflow-hidden">

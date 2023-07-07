@@ -7,6 +7,7 @@ export type Project = {
     thumbnail: string;
     category: string;
     likes: string[];
+    views: string[];
     websiteUrl?: string;
     github: string;
 };

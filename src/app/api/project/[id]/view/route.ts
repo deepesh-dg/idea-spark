@@ -13,11 +13,8 @@ export async function PATCH(req: Request, { params: { id: projectId } }: { param
 
     if (!project) return NextResponse.json(null);
 
-    if (project.likes.includes(userId)) {
-        const index = project.likes.indexOf(userId);
-        project.likes.splice(index, 1);
-    } else {
-        project.likes.push(userId);
+    if (!project.views.includes(userId)) {
+        project.views.push(userId);
     }
 
     const newProject: Project = {
