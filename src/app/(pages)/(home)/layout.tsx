@@ -1,19 +1,26 @@
 "use client";
 import service from "@/appwrite/config";
 import { Container, ProjectCard } from "@/components";
-import { addProjects } from "@/state/projectsSlice";
+import conf from "@/conf/conf";
+import { setProjects as setStateProjects } from "@/state/projectsSlice";
 import { useAppDispatch, useAppSelector } from "@/state/store";
+import { Query } from "appwrite";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
 function HomeLayout({ children }: { children: React.ReactNode }) {
     const dispatch = useAppDispatch();
-    const { documents: projects } = useAppSelector((state) => state.projects);
+    const { documents: projects, total } = useAppSelector((state) => state.projects);
     const { id } = useParams();
 
+    const query = useSearchParams();
+    const category = query.get("category");
+
     useEffect(() => {
-        service.getProjectList().then((projects) => {
+        const query: string[] = [];
+        if (category) query.push(Query.equal("category", category));
+        service.getProjectList(query).then((projects) => {
             if (projects) {
                 const sortedProjects = projects.documents.sort((a, b) => {
                     const prevDate = new Date(a.$createdAt);
@@ -21,14 +28,30 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
 
                     return prevDate > nextDate ? -1 : 1;
                 });
-                dispatch(addProjects(sortedProjects));
+                dispatch(setStateProjects({ total: projects.total, documents: sortedProjects }));
             }
         });
-    }, [dispatch]);
+    }, [dispatch, category]);
 
     return (
-        <>
+        <div className="py-16">
             <Container>
+                <ul className="flex flex-wrap gap-4 mb-4 justify-center">
+                    {conf.projectCategories.map((localCategory, i) => (
+                        <li key={localCategory}>
+                            <Link
+                                href={{ pathname: "/", query: { category: i === 0 ? "" : localCategory } }}
+                                className={`inline-block px-3 py-1 rounded-md border ${
+                                    localCategory === category || (i === 0 && !category)
+                                        ? "border-primary bg-primary"
+                                        : "border-white/10"
+                                }`}
+                            >
+                                {i === 0 ? `All` : localCategory}
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
                 <div className={`flex flex-wrap -mx-2 gap-y-4`}>
                     {projects.map((project) => {
                         return (
@@ -40,26 +63,22 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
                 </div>
             </Container>
             {id && (
-                <div className="fixed z-40 inset-0 border border-white/20 animate-popup">
-                    <div className="border border-white/20 w-full h-screen">
-                        <div className="overflow-auto w-full h-full bg-lightenDark py-12">
-                            <Container>
-                                <div className="max-w-4xl mx-auto">
-                                    <div className="flex mb-4">
-                                        <Link href={"/"}>
-                                            <span className="inline-flex w-8 h-8 rounded-full border border-white/20 text-white/70 hover:text-white/90 hover:bg-white/10 justify-center items-center">
-                                                <span className="relative -top-[1px]">&lt;</span>
-                                            </span>
-                                        </Link>
-                                    </div>
-                                    {children}
-                                </div>
-                            </Container>
+                <div className="fixed z-40 inset-0 border border-white/20 overflow-auto w-full h-full bg-lightenDark py-12 animate-popup">
+                    <Container>
+                        <div className="max-w-4xl mx-auto">
+                            <div className="flex mb-4">
+                                <Link href={"/"}>
+                                    <span className="inline-flex w-8 h-8 rounded-full border border-white/20 text-white/70 hover:text-white/90 hover:bg-white/10 justify-center items-center">
+                                        <span className="relative -top-[1px]">&lt;</span>
+                                    </span>
+                                </Link>
+                            </div>
+                            {children}
                         </div>
-                    </div>
+                    </Container>
                 </div>
             )}
-        </>
+        </div>
     );
 }
 

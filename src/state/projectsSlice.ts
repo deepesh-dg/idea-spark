@@ -26,6 +26,10 @@ const projectsSlice = createSlice({
                 project.$id === action.payload.$id ? action.payload : project
             );
         },
+        set(state, action: PayloadAction<{ total: number; documents: ProjectDocument[] }>) {
+            state.documents = action.payload.documents;
+            state.total = action.payload.total;
+        },
     },
 });
 
@@ -34,6 +38,7 @@ export const {
     delete: deleteProject,
     update: updateProject,
     empty: emptyProjects,
+    set: setProjects,
 } = projectsSlice.actions;
 
 export default projectsSlice.reducer;
