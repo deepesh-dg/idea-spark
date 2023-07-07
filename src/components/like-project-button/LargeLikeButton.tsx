@@ -1,5 +1,7 @@
 import React from "react";
 import LikeProjectButtonWrapper from "./LikeProjectButtonWrapper";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
 
 type Props = {
     projectId: string;
@@ -15,6 +17,7 @@ function LargeLikeButton({ projectId, liked = false, likesCount = 0 }: Props) {
                     liked ? "border-primary" : "bg-primary border-transparent"
                 }`}
             >
+                <FontAwesomeIcon icon={faHeart} className={`mr-2 ${liked ? "text-primary" : ""}`} />
                 {liked ? likesCount : "Like"}
             </button>
         </LikeProjectButtonWrapper>

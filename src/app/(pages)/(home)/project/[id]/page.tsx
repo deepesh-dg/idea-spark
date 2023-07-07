@@ -1,6 +1,7 @@
 "use client";
 import service from "@/appwrite/config";
 import { Avatar, LargeLikeButton, ProjectCard } from "@/components";
+import conf from "@/conf/conf";
 import { updateProject } from "@/state/projectsSlice";
 import { useAppDispatch, useAppSelector } from "@/state/store";
 import { ProjectDocument, ProjectDocuments, User } from "@/types";
@@ -53,7 +54,7 @@ function Project() {
 
     return project && author ? (
         <div className="relative w-full">
-            <div className="relative flex flex-wrap justify-between my-8">
+            <div className="relative flex flex-wrap justify-between my-8 gap-y-4">
                 <div className="w-full sm:w-1/2 flex gap-x-3 items-center">
                     <div className="w-10">
                         <Avatar text={author.name[0]} />
@@ -63,16 +64,23 @@ function Project() {
                         <div className="flex items-center gap-x-3">
                             <p className="text-white/80 text-sm">{author.username}</p>
                             &middot;
-                            <Link
-                                href={`/category/${project.category}`}
-                                className="capitalize text-primary hover:underline"
-                            >
-                                {project.category}
-                            </Link>
+                            {conf.projectCategories[0].toLowerCase() !== project.category.toLowerCase() && (
+                                <Link
+                                    href={{
+                                        pathname: "/",
+                                        query: {
+                                            category: project.category,
+                                        },
+                                    }}
+                                    className="capitalize text-primary hover:underline"
+                                >
+                                    {project.category}
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </div>
-                <div className="w-full sm:w-1/2 flex justify-end">
+                <div className="w-full sm:w-1/2 flex sm:justify-end">
                     <LargeLikeButton
                         likesCount={project.likes.length}
                         projectId={project.$id}
@@ -112,7 +120,7 @@ function Project() {
                     return (
                         project.$id !== id && (
                             <div key={project.$id} className="w-full md:w-1/2 px-2">
-                                <ProjectCard project={project} />
+                                <ProjectCard project={project} bg="bg-lightenDark" />
                             </div>
                         )
                     );

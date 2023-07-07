@@ -16,7 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <body className={inter.className}>
                 <StateProvider>
                     <Header />
-                    <main id="main" className="">
+                    <main id="main" className="py-2">
                         {children}
                     </main>
                 </StateProvider>

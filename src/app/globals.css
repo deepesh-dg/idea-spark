@@ -5,3 +5,16 @@
 body {
     @apply bg-dark text-white/90;
 }
+
+.animate-popup {
+    animation: popup 300ms 1;
+}
+
+@keyframes popup {
+    0% {
+        transform: scale(0.8);
+    }
+    100% {
+        transform: scale(1);
+    }
+}

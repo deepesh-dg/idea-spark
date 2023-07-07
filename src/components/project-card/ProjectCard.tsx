@@ -7,9 +7,10 @@ import React, { useCallback, useRef } from "react";
 type Props = {
     link?: boolean;
     project: ProjectDocument;
+    bg?: string;
 };
 
-function ProjectCard({ project, link = true }: Props) {
+function ProjectCard({ project, link = true, bg = "bg-dark" }: Props) {
     const blurEl = useRef<HTMLSpanElement>(null);
     const cardContainer = useRef<HTMLDivElement>(null);
 
@@ -26,12 +27,12 @@ function ProjectCard({ project, link = true }: Props) {
 
     const card = (
         <div
-            className="group relative w-full p-3 border overflow-hidden border-white/10 bg-lightenDark rounded-xl"
+            className={`group relative w-full p-3 border overflow-hidden border-white/10 rounded-xl ${bg}`}
             ref={cardContainer}
             onMouseMove={handleMouseMove}
         >
             <span
-                className="inline-block absolute w-20 h-20 bg-white/10 blur-xl overflow-hidden opacity-0 z-[0] group-hover:opacity-100 -translate-x-1/2 -translate-y-1/2"
+                className="inline-block absolute w-40 h-40 bg-white/10 blur-[100px] overflow-hidden opacity-0 z-[0] group-hover:opacity-100 -translate-x-1/2 -translate-y-1/2"
                 ref={blurEl}
                 // style={{ background: "#c1ffb4" }}
             ></span>
