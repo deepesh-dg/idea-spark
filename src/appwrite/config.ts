@@ -61,6 +61,14 @@ export class Service {
         return false;
     }
 
+    loginWithGoogle() {
+        this.account.createOAuth2Session(
+            "google",
+            new URL("/login", window.location.href).href,
+            new URL("/login", window.location.href).href
+        );
+    }
+
     async getCurrentUser() {
         try {
             return await this.account.get();

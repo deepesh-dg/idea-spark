@@ -12,6 +12,7 @@ import Loader from "./Loader";
 import LikeProjectButtonWrapper from "./like-project-button/LikeProjectButtonWrapper";
 import LargeLikeButton from "./like-project-button/LargeLikeButton";
 import Footer from "./footer/Footer";
+import LoginWithGoogle from "./LoginWithGoogle";
 
 export * from "./common";
 export {
@@ -29,4 +30,5 @@ export {
     LikeProjectButtonWrapper,
     LargeLikeButton,
     Footer,
+    LoginWithGoogle,
 };

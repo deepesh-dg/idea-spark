@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import { login } from "@/state/authSlice";
-import { Button, Input, Logo } from ".";
+import { Button, Input, LoginWithGoogle, Logo } from ".";
 
 const Signup = () => {
     const router = useRouter();
@@ -77,6 +77,7 @@ const Signup = () => {
                             required
                         />
                         <Button type="submit" value="Create Account" className="w-full" />
+                        <LoginWithGoogle type="signup" />
                     </div>
                 </form>
             </div>

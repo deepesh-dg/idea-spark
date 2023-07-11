@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import React, { FormEvent, useState } from "react";
 import { login as authLogin } from "@/state/authSlice";
 import { Button, Input, Logo } from ".";
+import { LoginWithGoogle } from ".";
 
 const Login = () => {
     const router = useRouter();
@@ -70,6 +71,7 @@ const Login = () => {
                             required
                         />
                         <Button type="submit" value="Sign in" className="w-full" />
+                        <LoginWithGoogle type="login" />
                     </div>
                 </form>
             </div>
