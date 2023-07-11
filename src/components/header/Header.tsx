@@ -100,7 +100,7 @@ function Header() {
                     </nav>
                 </Container>
             </header>
-            <ProjectFormSlide />
+            {authStatus && <ProjectFormSlide />}
         </>
     );
 }
