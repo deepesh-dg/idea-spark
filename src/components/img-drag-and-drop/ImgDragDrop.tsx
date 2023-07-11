@@ -24,15 +24,6 @@ function ImgDragDrop({ value, onChange, onError, placeholder = "Drag and Drop Fi
     const fileSelect = (file: File) => {
         if (onChange) onChange(file);
         setFile(file);
-        // const reader = new FileReader();
-        // reader.addEventListener("load", () => {
-        //     setFile((prev) => (prev ? { ...prev, src: reader.result as string } : null));
-        // });
-        // reader.readAsDataURL(file);
-        // setFile(() => {
-        //     if (onChange) onChange(file);
-        //     return { src: "", file: file };
-        // });
     };
 
     const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {

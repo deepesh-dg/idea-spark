@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Container, Logo, ProjectFormSlide } from "../";
 import Link from "next/link";
 import { useAppSelector } from "@/state/store";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faClose, faNavicon } from "@fortawesome/free-solid-svg-icons";
 
 function Header() {
     const [open, setOpen] = useState(false);
@@ -23,7 +25,7 @@ function Header() {
 
     return (
         <>
-            <header id="header" className="sticky top-0 inset-x-0 py-2 z-40 border-b border-white/10 bg-lightenDark">
+            <header id="header" className="sticky top-0 inset-x-0 z-40 border-b border-white/10 bg-lightenDark">
                 <Container>
                     <nav className="relative flex justify-between items-center">
                         <div className="w-36">
@@ -31,16 +33,22 @@ function Header() {
                                 <Logo />
                             </Link>
                         </div>
-                        <button className="md:hidden" onClick={() => setOpen(true)}>
-                            open
+                        <button className="md:hidden my-4" onClick={() => setOpen(true)}>
+                            <FontAwesomeIcon icon={faNavicon} />
                         </button>
                         <ul
-                            className={`flex gap-x-2 gap-y-4 flex-wrap fixed md:relative inset-0 md:inset-[unset] duration-300 bg-lightenDark z-[55] md:z-[auto] h-screen overflow-y-auto md:h-auto p-4 md:p-0 ${
+                            className={`md:flex md:gap-x-2 md:gap-y-4 md:flex-wrap fixed md:relative inset-0 md:inset-[unset] duration-300 bg-lightenDark z-[55] md:z-[auto] h-screen overflow-y-auto md:h-auto px-4 pb-4 pt-12 md:p-0 ${
                                 open ? "translate-y-0" : "-translate-y-full md:translate-y-0"
                             }`}
                         >
+                            <span
+                                className="fixed top-4 right-4 rounded-full w-8 h-8 border border-white/10 hover:border-white/20 duration-150 flex justify-center items-center cursor-pointer md:hidden"
+                                onClick={() => setOpen(false)}
+                            >
+                                <FontAwesomeIcon icon={faClose} />
+                            </span>
                             {navItems.map((item) => (
-                                <li key={item.name} className="w-full md:w-auto">
+                                <li key={item.name} className="my-4">
                                     <Link
                                         href={item.href}
                                         className="py-1 px-3 rounded-md inline-block hover:text-primary hover:bg-white/10 duration-150 w-full border border-primary md:border-transparent"
@@ -51,7 +59,7 @@ function Header() {
                             ))}
                             {authStatus ? (
                                 <>
-                                    <li className="w-full md:w-auto">
+                                    <li className="my-4">
                                         <Link
                                             href={"/profile"}
                                             className="py-1 px-3 rounded-md inline-block hover:text-primary hover:bg-white/10 duration-150 w-full border border-primary md:border-transparent"
@@ -59,7 +67,7 @@ function Header() {
                                             Profile
                                         </Link>
                                     </li>
-                                    <li className="w-full md:w-auto">
+                                    <li className="my-4">
                                         <Link
                                             href={"/logout"}
                                             className="py-1 px-3 rounded-md bg-primary text-white inline-block duration-150 w-full"
@@ -70,7 +78,7 @@ function Header() {
                                 </>
                             ) : (
                                 <>
-                                    <li className="w-full md:w-auto">
+                                    <li className="my-4">
                                         <Link
                                             href={"/login"}
                                             className="py-1 px-3 rounded-md inline-block hover:text-primary hover:bg-white/10 duration-150 w-full"
@@ -78,7 +86,7 @@ function Header() {
                                             Log in
                                         </Link>
                                     </li>
-                                    <li className="w-full md:w-auto">
+                                    <li className="my-4">
                                         <Link
                                             href={"/signup"}
                                             className="py-1 px-3 rounded-md bg-primary text-white inline-block duration-150 w-full"
