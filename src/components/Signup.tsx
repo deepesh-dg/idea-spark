@@ -1,5 +1,5 @@
 "use client";
-import service from "@/appwrite/config";
+import authService from "@/appwrite/auth";
 import { useAppDispatch } from "@/state/store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,10 +23,10 @@ const Signup = () => {
         e.preventDefault();
 
         try {
-            const userData = await service.createAccount(formData);
+            const userData = await authService.createAccount(formData);
             if (userData) {
-                const token = await service.getToken();
-                const userData = await service.getCurrentUser();
+                const token = await authService.getToken();
+                const userData = await authService.getCurrentUser();
                 if (token && userData) dispatch(login({ token, userData }));
                 router.push("/profile");
             }

@@ -1,5 +1,4 @@
 "use client";
-import service from "@/appwrite/config";
 import { useAppDispatch } from "@/state/store";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -7,6 +6,7 @@ import React, { FormEvent, useState } from "react";
 import { login as authLogin } from "@/state/authSlice";
 import { Button, Input, Logo } from ".";
 import { LoginWithGoogle } from ".";
+import authService from "@/appwrite/auth";
 
 const Login = () => {
     const router = useRouter();
@@ -23,10 +23,10 @@ const Login = () => {
         e.preventDefault();
 
         try {
-            const session = await service.login(formData);
+            const session = await authService.login(formData);
             if (session) {
-                const token = await service.getToken();
-                const userData = await service.getCurrentUser();
+                const token = await authService.getToken();
+                const userData = await authService.getCurrentUser();
                 if (token && userData) dispatch(authLogin({ token, userData }));
                 router.push("/profile");
             }

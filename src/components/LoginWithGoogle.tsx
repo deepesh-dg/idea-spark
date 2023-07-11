@@ -1,4 +1,4 @@
-import service from "@/appwrite/config";
+import authService from "@/appwrite/auth";
 import React from "react";
 
 type Props = {
@@ -10,7 +10,7 @@ const LoginWithGoogle: React.FC<Props> = ({ type = "login" }) => {
         <button
             type="button"
             className="relative inline-flex w-full items-center justify-center rounded-md border border-white/20 bg-white/10 px-3.5 py-2.5 font-semibold transition-all duration-200 hover:bg-white/20 focus:outline-none"
-            onClick={() => service.loginWithGoogle()}
+            onClick={() => authService.loginWithGoogle()}
         >
             <span className="mr-2 inline-block">
                 <svg

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { login, logout } from "@/state/authSlice";
-import service from "@/appwrite/config";
+import authService from "@/appwrite/auth";
 import { useAppDispatch } from "@/state/store";
 
 function PageLayout({ children }: { children: React.ReactNode }) {
@@ -10,11 +10,11 @@ function PageLayout({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         const checkAuth = async () => {
-            const authStatus = await service.isLoggedIn();
+            const authStatus = await authService.isLoggedIn();
 
             if (authStatus) {
-                const token = await service.getToken();
-                const userData = await service.getCurrentUser();
+                const token = await authService.getToken();
+                const userData = await authService.getCurrentUser();
 
                 if (token && userData) {
                     dispatch(login({ token, userData }));

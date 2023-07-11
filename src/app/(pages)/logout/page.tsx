@@ -1,5 +1,5 @@
 "use client";
-import service from "@/appwrite/config";
+import authService from "@/appwrite/auth";
 import { logout } from "@/state/authSlice";
 import { useAppDispatch } from "@/state/store";
 import { useRouter } from "next/navigation";
@@ -10,7 +10,7 @@ const Logout = () => {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        service.logout().then(() => {
+        authService.logout().then(() => {
             dispatch(logout());
             router.push("/");
         });
