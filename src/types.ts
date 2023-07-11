@@ -3,7 +3,7 @@ import { Models } from "appwrite";
 export type Project = {
     name: string;
     userId: string;
-    description?: string;
+    description: string;
     thumbnail: string;
     category: string;
     likes: string[];

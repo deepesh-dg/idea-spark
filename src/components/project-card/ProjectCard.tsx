@@ -1,8 +1,11 @@
 "use client";
 import service from "@/appwrite/config";
 import { ProjectDocument } from "@/types";
+import { faEye, faHeart } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import React, { useCallback, useRef } from "react";
+import { useAppSelector } from "@/state/store";
 
 type Props = {
     link?: boolean;
@@ -13,6 +16,8 @@ type Props = {
 function ProjectCard({ project, link = true, bg = "bg-dark" }: Props) {
     const blurEl = useRef<HTMLSpanElement>(null);
     const cardContainer = useRef<HTMLDivElement>(null);
+
+    const { userData } = useAppSelector((state) => state.auth);
 
     const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (cardContainer.current && blurEl.current) {
@@ -34,7 +39,6 @@ function ProjectCard({ project, link = true, bg = "bg-dark" }: Props) {
             <span
                 className="inline-block absolute w-40 h-40 bg-white/10 blur-[100px] overflow-hidden opacity-0 z-[0] group-hover:opacity-100 -translate-x-1/2 -translate-y-1/2"
                 ref={blurEl}
-                // style={{ background: "#c1ffb4" }}
             ></span>
             <div className="w-full pt-[60%] relative overflow-hidden z-[1] mb-3">
                 <div className="absolute inset-0 flex justify-center items-center rounded-xl overflow-hidden">
@@ -46,7 +50,23 @@ function ProjectCard({ project, link = true, bg = "bg-dark" }: Props) {
                     «
                 </div>
                 <h2 className="text-lg">{project.name.substring(0, 40)}</h2>
-                <p className="text-white/50 text-sm">{project.description?.substring(0, 50)}</p>
+                <p className="text-white/50 text-sm">
+                    {project.description?.substring(0, 45)}
+                    {project.description?.length > 45 ? "..." : ""}
+                </p>
+            </div>
+            <div className="flex gap-x-6">
+                <span className="inline-flex items-center">
+                    <FontAwesomeIcon
+                        icon={faHeart}
+                        className={userData && project.likes.includes(userData.$id) ? "text-primary" : "text-white/40"}
+                    />
+                    &nbsp;{project.likes.length}
+                </span>
+                <span className="inline-flex items-center">
+                    <FontAwesomeIcon icon={faEye} className={"text-white/40"} />
+                    &nbsp;{project.views.length}
+                </span>
             </div>
         </div>
     );

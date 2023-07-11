@@ -9,10 +9,11 @@ import { faCode, faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Query } from "appwrite";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 function Project() {
+    const router = useRouter();
     const { id } = useParams();
     const [project, setProject] = useState<ProjectDocument | null>(null);
     const [authorProjects, setAuthorProjects] = useState<ProjectDocuments | null>(null);
@@ -21,6 +22,17 @@ function Project() {
     const { userData } = useAppSelector((state) => state.auth);
 
     const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        const keydownHandler = (e: KeyboardEvent) => {
+            if (e.key.toLowerCase() === "escape") {
+                router.push("/");
+            }
+        };
+
+        document.addEventListener("keydown", keydownHandler);
+        return () => document.removeEventListener("keydown", keydownHandler);
+    }, [router]);
 
     useEffect(() => {
         if (author) {

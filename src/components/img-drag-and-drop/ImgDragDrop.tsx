@@ -49,7 +49,7 @@ function ImgDragDrop({ value, onChange, onError, placeholder = "Drag and Drop Fi
 
     return (
         <div
-            className={`min-h-[100px] w-full flex flex-wrap items-center justify-center bg-white/10 rounded-lg cursor-pointer border border-white/20 border-dashed ${className}`}
+            className={`min-h-[100px] w-full flex flex-wrap items-center justify-center bg-white/10 rounded-lg cursor-pointer border border-white/20 border-dashed hover:bg-white/[0.15] duration-150 ${className}`}
             onDragOver={handleDragOver}
             onDrop={handleDrop}
             onClick={() => fileInput.current?.click()}

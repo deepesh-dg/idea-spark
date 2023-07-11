@@ -1,9 +1,11 @@
 "use client";
 import service from "@/appwrite/config";
-import { Container, ProjectCard } from "@/components";
+import { Container, Pagination, ProjectCard } from "@/components";
 import conf from "@/conf/conf";
 import { setProjects as setStateProjects } from "@/state/projectsSlice";
 import { useAppDispatch, useAppSelector } from "@/state/store";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Query } from "appwrite";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
@@ -16,10 +18,18 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
 
     const query = useSearchParams();
     const category = query.get("category");
+    const page = query.get("page");
+
+    const itemsPerPage = 9;
 
     useEffect(() => {
         const query: string[] = [];
+
+        query.push(Query.limit(itemsPerPage));
+
         if (category) query.push(Query.equal("category", category));
+        if (page && Number(page) > 0) query.push(Query.offset(Number(page) * itemsPerPage - 1));
+
         service.getProjectList(query).then((projects) => {
             if (projects) {
                 const sortedProjects = projects.documents.sort((a, b) => {
@@ -31,7 +41,7 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
                 dispatch(setStateProjects({ total: projects.total, documents: sortedProjects }));
             }
         });
-    }, [dispatch, category]);
+    }, [dispatch, category, page]);
 
     return (
         <div className="py-16">
@@ -61,6 +71,9 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
                         );
                     })}
                 </div>
+                <div className="flex mt-6">
+                    <Pagination maxPage={Math.ceil(total / itemsPerPage)} />
+                </div>
             </Container>
             {id && (
                 <div className="fixed z-40 inset-0 border border-white/20 overflow-auto w-full h-full bg-lightenDark py-12 animate-popup">
@@ -69,7 +82,7 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
                             <div className="flex mb-4">
                                 <Link href={"/"}>
                                     <span className="inline-flex w-8 h-8 rounded-full border border-white/20 text-white/70 hover:text-white/90 hover:bg-white/10 justify-center items-center">
-                                        <span className="relative -top-[1px]">&lt;</span>
+                                        <FontAwesomeIcon icon={faArrowLeft} />
                                     </span>
                                 </Link>
                             </div>

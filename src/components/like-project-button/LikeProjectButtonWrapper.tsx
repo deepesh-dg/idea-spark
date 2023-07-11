@@ -12,7 +12,7 @@ function LikeProjectButtonWrapper({ children, projectId }: Props) {
     const { status: authStatus, userData } = useAppSelector((state) => state.auth);
     const dispatch = useAppDispatch();
 
-    const toggleLike = async () => {
+    const toggleLike = async (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
         if (!authStatus || !userData) return;
 
         const updatedProject = await service.toggleLike(projectId, userData.$id);
