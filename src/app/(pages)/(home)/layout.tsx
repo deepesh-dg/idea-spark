@@ -1,15 +1,15 @@
 "use client";
 import service from "@/appwrite/config";
-import { Container, Pagination, ProjectCard } from "@/components";
+import { Container, ProjectCard } from "@/components";
 import conf from "@/conf/conf";
-import { setProjects as setStateProjects } from "@/state/projectsSlice";
+import { addProjects, setProjects as setStateProjects } from "@/state/projectsSlice";
 import { useAppDispatch, useAppSelector } from "@/state/store";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Query } from "appwrite";
 import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 function HomeLayout({ children }: { children: React.ReactNode }) {
     const dispatch = useAppDispatch();
@@ -18,27 +18,23 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
 
     const query = useSearchParams();
     const category = query.get("category");
-    const page = query.get("page");
 
-    const itemsPerPage = 9;
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 1;
+    const maxPage = Math.ceil(total / itemsPerPage);
 
     useEffect(() => {
         const query: string[] = [];
 
-        query.push(Query.limit(itemsPerPage));
+        query.push(Query.limit(itemsPerPage), Query.orderDesc("$createdAt"));
 
         if (category) query.push(Query.equal("category", category));
         if (page && Number(page) > 0) query.push(Query.offset(Number(page) * itemsPerPage - 1));
 
         service.getProjectList(query).then((projects) => {
             if (projects) {
-                const sortedProjects = projects.documents.sort((a, b) => {
-                    const prevDate = new Date(a.$createdAt);
-                    const nextDate = new Date(b.$createdAt);
-
-                    return prevDate > nextDate ? -1 : 1;
-                });
-                dispatch(setStateProjects({ total: projects.total, documents: sortedProjects }));
+                if (category) dispatch(setStateProjects({ total: projects.total, documents: projects.documents }));
+                else dispatch(addProjects({ projects: projects.documents, total: projects.total }));
             }
         });
     }, [dispatch, category, page]);
@@ -51,7 +47,7 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
                         <li key={localCategory}>
                             <Link
                                 href={{ pathname: "/", query: { category: i === 0 ? "" : localCategory } }}
-                                className={`inline-block px-3 py-1 rounded-md border ${
+                                className={`inline-block px-3 py-1 rounded-md border capitalize hover:border-primary hover:bg-primary duration-150 ${
                                     localCategory === category || (i === 0 && !category)
                                         ? "border-primary bg-primary"
                                         : "border-white/10"
@@ -71,9 +67,16 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
                         );
                     })}
                 </div>
-                <div className="flex mt-6">
-                    <Pagination maxPage={Math.ceil(total / itemsPerPage)} />
-                </div>
+                {page < maxPage && (
+                    <div className="flex mt-6 justify-center">
+                        <button
+                            className="rounded-md px-3 py-1 inline-flex bg-white/10 items-center justify-center hover:bg-white/20 duration-150"
+                            onClick={() => setPage((prev) => prev + itemsPerPage)}
+                        >
+                            Load More
+                        </button>
+                    </div>
+                )}
             </Container>
             {id && (
                 <div className="fixed z-40 inset-0 border border-white/20 overflow-auto w-full h-full bg-lightenDark py-12 animate-popup">

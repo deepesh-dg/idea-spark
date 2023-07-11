@@ -10,9 +10,9 @@ const projectsSlice = createSlice({
     name: "projects",
     initialState,
     reducers: {
-        add(state, action: PayloadAction<ProjectDocument[]>) {
-            state.documents.splice(0, 0, ...action.payload);
-            state.total += action.payload.length;
+        add(state, action: PayloadAction<{ projects: ProjectDocument[]; total?: number }>) {
+            state.documents.splice(0, 0, ...action.payload.projects);
+            state.total = action.payload.total ?? state.total + action.payload.projects.length;
         },
         delete(state, action: PayloadAction<string>) {
             state.documents = state.documents.filter((project) => project.$id !== action.payload);
