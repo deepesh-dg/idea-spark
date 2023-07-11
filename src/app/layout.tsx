@@ -1,4 +1,4 @@
-import { Header } from "@/components";
+import { Footer, Header } from "@/components";
 import "./globals.css";
 import { Inter } from "next/font/google";
 import StateProvider from "@/state/StateProvider";
@@ -19,6 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                     <main id="main" className="py-2">
                         {children}
                     </main>
+                    <Footer />
                 </StateProvider>
             </body>
         </html>

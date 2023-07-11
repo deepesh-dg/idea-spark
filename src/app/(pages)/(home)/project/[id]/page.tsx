@@ -49,13 +49,13 @@ function Project() {
     }, [userData, id]);
 
     useEffect(() => {
-        const cachedProject = projects.filter((project) => project.$id === id)[0];
+        // const cachedProject = projects.filter((project) => project.$id === id)[0];
 
-        if (cachedProject) {
-            setProject(cachedProject);
-        } else {
-            service.getProject(id).then(setProject);
-        }
+        // if (cachedProject) {
+        //     setProject(() => cachedProject);
+        // } else {
+        // }
+        service.getProject(id).then(setProject);
     }, [id, projects]);
 
     useEffect(() => {
@@ -92,12 +92,22 @@ function Project() {
                         </div>
                     </div>
                 </div>
-                <div className="w-full sm:w-1/2 flex sm:justify-end">
+                <div className="w-full sm:w-1/2 flex sm:justify-end items-center">
                     <LargeLikeButton
                         likesCount={project.likes.length}
                         projectId={project.$id}
                         liked={Boolean(userData && project.likes.includes(userData.$id))}
                     />
+                    {userData && userData.$id === project.userId ? (
+                        <div>
+                            <Link
+                                href={`/project/edit/${project.$id}`}
+                                className="inline-block rounded-md text-white px-4 py-0.5 duration-150 hover:bg-primary/40 ml-2"
+                            >
+                                Edit
+                            </Link>
+                        </div>
+                    ) : null}
                 </div>
             </div>
             <div className="w-full flex justify-center mb-8">

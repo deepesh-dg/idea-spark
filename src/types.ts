@@ -8,7 +8,7 @@ export type Project = {
     category: string;
     likes: string[];
     views: string[];
-    websiteUrl?: string;
+    websiteUrl: string;
     github: string;
 };
 

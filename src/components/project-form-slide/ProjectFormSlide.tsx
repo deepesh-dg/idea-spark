@@ -97,16 +97,19 @@ function ProjectFormSlide() {
             }}
         >
             <button
-                className="inline-flex w-16 h-16 pl-3 justify-start items-center bg-primary rounded-full text-2xl hover:shadow shadow-primary shrink-0 translate-x-1/2"
+                className="absolute top-1/2 -translate-y-1/2 inline-flex w-16 h-16 pl-3 justify-start items-center bg-primary rounded-full text-2xl hover:shadow shadow-primary shrink-0 translate-x-1/2"
                 onClick={(e) => {
                     e.stopPropagation();
                     setOpen((prev) => !prev);
+                }}
+                style={{
+                    right: `${`${formRef.current?.clientWidth}px`}`,
                 }}
             >
                 {open ? "-" : "+"}
             </button>
             <div className="relative w-full h-full" ref={formRef} onClick={(e) => e.stopPropagation()}>
-                <ProjectForm />
+                <ProjectForm clickCloseBtn={() => setOpen(false)} />
             </div>
         </div>
     );

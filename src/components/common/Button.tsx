@@ -17,19 +17,21 @@ function Button({ value, type, href, blank = false, className = "", variant = "p
         type,
         href,
         target: blank ? "_blank" : undefined,
-        className: `rounded-lg px-4 py-2 duration-150 ${className} `,
+        className: `rounded-lg px-4 py-2 duration-150 disabled:cursor-not-allowed `,
         ...props,
     };
 
     switch (variant) {
         case "dark":
-            btnProps.className += "bg-dark text-white hover:bg-dark/80";
+            btnProps.className += "bg-dark text-white disabled:bg-dark/80 hover:bg-dark/80";
             break;
         case "primary":
         default:
-            btnProps.className += "bg-primary text-white hover:bg-primary/80";
+            btnProps.className += "bg-primary text-white hover:bg-primary/80 disabled:bg-primary/80";
             break;
     }
+
+    btnProps.className += " " + className;
 
     return href ? (
         externalLink ? (

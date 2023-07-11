@@ -1,8 +1,8 @@
 "use client";
 import service from "@/appwrite/config";
-import { Container, ProjectCard } from "@/components";
+import { Button, Container, ProjectCard } from "@/components";
 import conf from "@/conf/conf";
-import { addProjects, setProjects as setStateProjects } from "@/state/projectsSlice";
+import { setProjects as setStateProjects } from "@/state/projectsSlice";
 import { useAppDispatch, useAppSelector } from "@/state/store";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -20,7 +20,7 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
     const category = query.get("category");
 
     const [page, setPage] = useState(1);
-    const itemsPerPage = 1;
+    const itemsPerPage = 6;
     const maxPage = Math.ceil(total / itemsPerPage);
 
     useEffect(() => {
@@ -29,12 +29,11 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
         query.push(Query.limit(itemsPerPage), Query.orderDesc("$createdAt"));
 
         if (category) query.push(Query.equal("category", category));
-        if (page && Number(page) > 0) query.push(Query.offset(Number(page) * itemsPerPage - 1));
+        if (page && Number(page) > 0) query.push(Query.offset((Number(page) - 1) * itemsPerPage));
 
         service.getProjectList(query).then((projects) => {
             if (projects) {
-                if (category) dispatch(setStateProjects({ total: projects.total, documents: projects.documents }));
-                else dispatch(addProjects({ projects: projects.documents, total: projects.total }));
+                dispatch(setStateProjects({ total: projects.total, documents: projects.documents }));
             }
         });
     }, [dispatch, category, page]);
@@ -42,7 +41,7 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="py-16">
             <Container>
-                <ul className="flex flex-wrap gap-4 mb-4 justify-center">
+                <ul className="flex flex-wrap gap-x-4 gap-y-2 mb-4 justify-center">
                     {conf.projectCategories.map((localCategory, i) => (
                         <li key={localCategory}>
                             <Link
@@ -50,7 +49,7 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
                                 className={`inline-block px-3 py-1 rounded-md border capitalize hover:border-primary hover:bg-primary duration-150 ${
                                     localCategory === category || (i === 0 && !category)
                                         ? "border-primary bg-primary"
-                                        : "border-white/10"
+                                        : "border-white/10 md:border-transparent"
                                 }`}
                             >
                                 {i === 0 ? `All` : localCategory}
@@ -67,16 +66,24 @@ function HomeLayout({ children }: { children: React.ReactNode }) {
                         );
                     })}
                 </div>
-                {page < maxPage && (
-                    <div className="flex mt-6 justify-center">
-                        <button
-                            className="rounded-md px-3 py-1 inline-flex bg-white/10 items-center justify-center hover:bg-white/20 duration-150"
-                            onClick={() => setPage((prev) => prev + itemsPerPage)}
-                        >
-                            Load More
-                        </button>
-                    </div>
-                )}
+                <div className="flex mt-6 justify-center gap-4">
+                    {page > 1 && (
+                        <Button
+                            value="Prev"
+                            variant="primary"
+                            onClick={() => setPage((prev) => (prev <= 1 ? 1 : prev - 1))}
+                            disabled={page <= 1}
+                        />
+                    )}
+                    {page < maxPage && (
+                        <Button
+                            value="Next"
+                            variant="primary"
+                            onClick={() => setPage((prev) => (prev >= maxPage ? maxPage : prev + 1))}
+                            disabled={page >= maxPage}
+                        />
+                    )}
+                </div>
             </Container>
             {id && (
                 <div className="fixed z-40 inset-0 border border-white/20 overflow-auto w-full h-full bg-lightenDark py-12 animate-popup">

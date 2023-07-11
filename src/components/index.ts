@@ -11,6 +11,7 @@ import Avatar from "./Avatar";
 import Loader from "./Loader";
 import LikeProjectButtonWrapper from "./like-project-button/LikeProjectButtonWrapper";
 import LargeLikeButton from "./like-project-button/LargeLikeButton";
+import Footer from "./footer/Footer";
 
 export * from "./common";
 export {
@@ -27,4 +28,5 @@ export {
     Loader,
     LikeProjectButtonWrapper,
     LargeLikeButton,
+    Footer,
 };

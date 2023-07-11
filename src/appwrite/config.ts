@@ -145,6 +145,20 @@ export class Service {
         }
     }
 
+    async updateProject(projectId: string, project: Partial<Project>) {
+        try {
+            return await this.databases.updateDocument<ProjectDocument>(
+                conf.appwriteDatabaseId,
+                conf.appwriteCollectoinId,
+                projectId,
+                project
+            );
+        } catch (error) {
+            console.log("Appwrite service :: updateProject() :: " + error);
+            return null;
+        }
+    }
+
     async deleteProject(id: string) {
         try {
             await this.databases.deleteDocument(conf.appwriteDatabaseId, conf.appwriteCollectoinId, id);
